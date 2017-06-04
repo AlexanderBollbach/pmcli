@@ -1,0 +1,19 @@
+{
+  "name": "quick-assign",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cli-prompt": "^0.6.0",
+    "commander": "^2.9.0",
+    "jira-api": "^0.2.2",
+    "node-rest-client": "^3.1.0",
+    "request": "^2.81.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
