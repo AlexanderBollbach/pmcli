@@ -1,5 +1,5 @@
 {
-  "name": "quick-assign",
+  "name": "pmcli",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,14 +10,13 @@
     "node-rest-client": "^3.1.0",
     "request": "^2.81.0"
   },
+  "bin": {
+    "pmcli": "bin/pmcli.js"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-
-  "license": "ISC",
-  "bin": {
-    "pmcli": "main.js"
-  }
+  "license": "ISC"
 }
