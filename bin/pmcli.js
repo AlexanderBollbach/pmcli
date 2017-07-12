@@ -1,3 +1,3 @@
 #!/usr/bin/env node
-
-require('../index');
+var program = require('../index');
+program.parse(process.argv);
