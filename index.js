@@ -5,48 +5,28 @@ var util = require('util');
 var program = require('commander');
 var commands = require('./commands')(program);
 
-var request = require('request');
+
 var packageJson = require('./package.json');
 var status = require('./lib/status');
-// Initialize cli options
+
+const logger = require('./logging/logger')
+
 program
 	.version(packageJson.version)
 	.usage('<command> [options]')
 	.option('-d, --debug', 'show debug info');
 
-console.log("add logging");
-// logging
-program.LOG_PATH = process.env.HOME + '/.cli-log';
+program.logger = logger
 
-// Initialize prompt
-program.prompt = require('prompt');
-program.prompt.message = '';
-program.prompt.delimiter = '';
-program.prompt.colors = true;
-
-// Setup logging and messaging
-var logMessages = [];
-
-program.log = (function (debugMode) {
-	return function _log(logEntry, noPrint) {
-		logMessages.push(logEntry);
-		if (!noPrint && debugMode) {
-			console.log('--debug-- '.cyan + logEntry);
-		}
-	};
-})(process.argv.indexOf('--debug') >= 0);
-
-program.successMessage = function successMessage() {
+program.succeed = function (message) {
 	var msg = util.format.apply(this, arguments);
-	program.log('Success: ' + msg, true);
-	console.log(msg.green);
+	program.logger.log('Success: ' + msg, true);
+	program.logger.dump();
 };
 
 program.errorMessage = function errorMessage() {
 	var msg = util.format.apply(this, arguments);
-  console.log("msg");
-  console.log(msg);
-	program.log('Error: ' + msg, true);
+	program.logger.log('Error: ' + msg, true);
 	console.log(msg.red);
 };
 
@@ -58,93 +38,15 @@ program.handleError = function handleError(err, exitCode) {
 			program.errorMessage(err);
 		}
 	}
-
-	console.log('For more information see: ' + program.LOG_PATH);
-
-	fs.writeFileSync(program.LOG_PATH, logMessages.join('\n') + '\n');
-
+	program.logger.dump()
 	process.exit(exitCode || 1);
 };
 
-// Create request wrapper
-program.request = function (opts, next) {
-  if (program.debug) {
-    program.log('REQUEST: '.bold + JSON.stringify(opts, null, 2));
-  } else {
-  	program.log(opts.uri);
-  }
-  status.start();
-  return request(opts, function (err, res, body) {
-  	status.stop();
-    if (err) {
-      if (program.debug) {
-        program.errorMessage(err.message);
-      }
-      return next(err, res, body);
-    }
-    else {
-      if (program.debug) {
-        program.log('RESPONSE: '.bold + JSON.stringify(res.headers, null, 2));
-        program.log('BODY: '.bold + JSON.stringify(res.body, null, 2));
-      }
-      return next(err, res, body);
-    }
-  });
-};
-
+program.request = require('./Networking/Requests.js')
 
 program.on('*', function() {
 	console.log('Unknown Command: ' + program.args.join(' '));
 	program.help();
 });
 
-
-
-// if (!program.args.length) { program.help(); }  
-//
-//
-// program
-//   .version('0.0.1')
-//   .usage('<keywords>')
-//   .command('github <username> <password>')
-//   .action((un, pw) => {
-//     var data = require('./userData.json')
-//     data.github = { un, pw };
-//     write(data);
-//   });
-//
-// program
-//   .version('0.0.1')
-//   .usage('<keywords>')
-//   .command('jira <username> <password>')
-//   .action((un,pw) => {
-//     var data = require('./userData.json')
-//     data.jira = { un, pw };
-//     write(data);
-//   });
-//
-//
-//   program
-//     .version('0.0.1')
-//     .usage('<keywords>')
-//     .command('gh')
-//     .action(() => {
-//
-//       var ghCore = require('./GithubCore/main');
-//       ghCore.authorize();
-//     });
-
-
-
 module.exports = program;
-
-
-
-
-// function write(object) {
-//   var fs = require('fs');
-//   fs.writeFile('userData.json', JSON.stringify(object), function(err) {
-//     if (err) throw err;
-//     console.log('file saved');
-//   });
-// }

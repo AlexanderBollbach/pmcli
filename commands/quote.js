@@ -3,7 +3,6 @@ var Table = require('cli-table');
 module.exports = function helloCommand(program) {
 	'use strict';
 
-  console.log("needs req");
 
 	program
 		.command('quote <symbol>')

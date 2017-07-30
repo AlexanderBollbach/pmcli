@@ -1,6 +1,6 @@
 var Client = require('node-rest-client').Client;
 client = new Client();
-var config = require('../config');
+
 var request = require('request');
 
 
@@ -8,9 +8,9 @@ module.exports = {
 
   assign: function(issueID, assignee) {
 
-    var creds = config.read();
 
-    console.log(creds);
+
+    
     var postData = {
       "username": creds.username,
       "password": creds.password
