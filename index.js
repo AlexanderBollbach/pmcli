@@ -1,13 +1,16 @@
 #!/usr/bin/env node
-var fs = require('fs');
-var util = require('util');
+const fs = require('fs');
+const util = require('util');
 
-var program = require('commander');
-var commands = require('./commands')(program);
+const program = require('commander');
 
 
-var packageJson = require('./package.json');
-var status = require('./lib/status');
+// initialize commands
+const commands = require('./commands')(program);
+
+
+const packageJson = require('./package.json');
+const status = require('./lib/status');
 
 const logger = require('./logging/logger')
 
